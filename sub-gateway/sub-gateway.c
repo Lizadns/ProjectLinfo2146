@@ -8,14 +8,14 @@
 
 static void broadcast_presence(void) {
     network_packet_t packet;
-    packet.node_id = linkaddr_node_addr;
+    packet.src_addr = linkaddr_node_addr;
     packet.type = 0;
-    strcpy(packet.payload, "Sub-Gateway Presence");
+    strcpy(packet.payload, "Sub-Gateway Hello");
 
     nullnet_buf = (uint8_t *)&packet;
     nullnet_len = sizeof(packet);
 
-    printf("Broadcasting presence\n");
+    printf("#Network# Broadcasting Sub-Gateway Hello\n");
 
     NETSTACK_NETWORK.output(NULL);
 }
@@ -28,19 +28,28 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
         switch (packet.type)
         {
             case 0:
-                if (strcmp(packet.payload, "Node hello") == 0) {
-                    printf("Received node hello from %02x:%02x\n", src->u8[0], src->u8[1]);
-                    broadcast_presence();
+                if (strcmp(packet.payload, "Node Hello") == 0) {
+                    network_packet_t response = {
+                        .src_addr = linkaddr_node_addr,
+                        .type = 0,
+                        .payload = "Sub-Gateway Hello Response"
+                    };
+
+                    nullnet_buf = (uint8_t *)&response;
+                    nullnet_len = sizeof(response);
+
+                    printf("#Network# Sending Sub-Gateway Hello Response to %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
+                    NETSTACK_NETWORK.output(&packet.src_addr);
                 }
                 break;
             case 1:
-                printf("Received packet from %02x:%02x with signal strength %d)\n", src->u8[0], src->u8[1], packet.signal_strength);
+                printf("Received packet from %02x:%02x with signal strength %d)\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.signal_strength);
                 break;
             case 2:
-                printf("Received packet from %02x:%02x with payload: %s\n", src->u8[0], src->u8[1], packet.payload);
+                printf("Received packet from %02x:%02x with payload: %s\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
                 break;
             default:
-                printf("Recieved an unknown packet type from %02x:%02x\n", src->u8[0], src->u8[1]);
+                printf("Recieved an unknown packet type from %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
                 break;
         }
     }
@@ -58,7 +67,7 @@ PROCESS_THREAD(sub_gateway, ev, data) {
     set_radio_channel();
     nullnet_set_input_callback(input_callback);
 
-    etimer_set(&periodic_timer, CLOCK_SECOND * 30);
+    etimer_set(&periodic_timer, CLOCK_SECOND * 300);
 
     while (1) {
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
