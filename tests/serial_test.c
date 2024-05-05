@@ -40,8 +40,14 @@
 #include "contiki.h"
 #include "dev/serial-line.h"
 #include "cpu/msp430/dev/uart0.h"
-
+#include "net/netstack.h"
+#include "net/nullnet/nullnet.h"
+#include "dev/radio.h"
+#include <string.h>
+#include "network_greenhouse.h"
 #include <stdio.h> /* For printf() */
+
+
 /*---------------------------------------------------------------------------*/
 PROCESS(test_serial, "Serial line test process");
 AUTOSTART_PROCESSES(&test_serial);
@@ -60,9 +66,11 @@ PROCESS_THREAD(test_serial, ev, data)
   while(1) {
 	
     PROCESS_YIELD();
+    printf("light intensity : 10\n");
     if(ev==serial_line_event_message){
    	printf("received line: %s\n", (char*) data); 
     }
+  
     //else if(etimer_expired(&timer)){
     //    printf("timer expired\n");
     //    etimer_reset(&timer); 

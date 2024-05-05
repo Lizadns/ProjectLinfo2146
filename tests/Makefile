@@ -1,6 +1,13 @@
 CONTIKI_PROJECT = test_serial
 all: $(CONTIKI_PROJECT)
-CONTIKI = /home/user/contiki-ng
-MAKE_NET = MAKE_NET_NULLNET
-include $(CONTIKI)/Makefile.include
 
+VPATH += ../net
+PROJECT_SOURCEFILES += network_greenhouse.c
+
+CONTIKI = ../..
+
+MAKE_NET = MAKE_NET_NULLNET
+
+CFLAGS += -I../net
+
+include $(CONTIKI)/Makefile.include
