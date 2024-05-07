@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "network_greenhouse.h"
 
+#define BROADCAST_DELAY (CLOCK_SECOND * 30)
+
 static void broadcast_presence(void) {
     network_packet_t packet;
     packet.src_addr = linkaddr_node_addr;
@@ -67,7 +69,7 @@ PROCESS_THREAD(sub_gateway, ev, data) {
     set_radio_channel();
     nullnet_set_input_callback(input_callback);
 
-    etimer_set(&periodic_timer, CLOCK_SECOND * 300);
+    etimer_set(&periodic_timer, BROADCAST_DELAY);
 
     while (1) {
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
