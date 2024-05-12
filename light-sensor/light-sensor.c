@@ -1,6 +1,5 @@
 #include "contiki.h"
 #include "net/netstack.h"
-#include "net/packetbuf.h"
 #include "net/nullnet/nullnet.h"
 #include "lib/random.h"
 #include "dev/radio.h"
@@ -12,8 +11,13 @@
 #define NIGHT_DURATION (600 * CLOCK_SECOND)
 #define REPORT_INTERVAL (10 * CLOCK_SECOND)
 
+#define NODE_TYPE 2
+
 static network_node_t parent;
 static uint8_t has_parent = 0;
+
+static network_node_t children_nodes[20];
+static int children_nodes_count = 0;
 
 void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const linkaddr_t *dest) {
   if (len == sizeof(network_packet_t)) {
@@ -23,77 +27,34 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
     switch (packet.type)
     {
       case 0:
-        if (strcmp(packet.payload, "Sub-Gateway Hello") == 0 || strcmp(packet.payload, "Sub-Gateway Hello Response") == 0) {
-          int8_t rssi = packetbuf_attr(PACKETBUF_ATTR_RSSI);
-          printf("#Routing# New node found: %02x:%02x, RSSI: %d dBm -> ", packet.src_addr.u8[0], packet.src_addr.u8[1], rssi);
-
-          if (!has_parent || parent.type != 1 || rssi > parent.signal_strength) {
-            parent.node_addr = packet.src_addr;
-            parent.type = 1;
-            parent.signal_strength = rssi;
-
-            has_parent = 1;
-            
-            printf("Parent (Sub-Gateway) address updated: %02x:%02x\n", parent.node_addr.u8[0], parent.node_addr.u8[1]);
+        if (strcmp(packet.payload, "Node Hello") == 0) {
+          if (packet.src_type == 1) {
+            assign_parent(packet, &parent, &has_parent, NODE_TYPE);
           } else {
-            printf("Ignored\n");
+            send_node_hello_response(packet, NODE_TYPE);
           }
-        } else if (strcmp(packet.payload, "Node Hello") == 0) {
-            network_packet_t response = {
-              .src_addr = linkaddr_node_addr,
-              .type = 0,
-              .payload = "Node Hello Response"
-            };
-
-            nullnet_buf = (uint8_t *)&response;
-            nullnet_len = sizeof(response);
-
-            printf("#Network# Sending Node Hello Response to %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
-
-            NETSTACK_NETWORK.output(&packet.src_addr);
         } else if (strcmp(packet.payload, "Node Hello Response") == 0) {
-            int8_t rssi = packetbuf_attr(PACKETBUF_ATTR_RSSI);
-            printf("#Routing# New node found: %02x:%02x, RSSI: %d dBm -> ", packet.src_addr.u8[0], packet.src_addr.u8[1], rssi);
-
-            if (!has_parent || (parent.type != 1 && rssi > parent.signal_strength)) {
-              parent.node_addr = packet.src_addr;
-              parent.type = 2;
-              parent.signal_strength = rssi;
-
-              has_parent = 1;
-
-              printf("Parent (Node) address updated: %02x:%02x\n", parent.node_addr.u8[0], parent.node_addr.u8[1]);
-            } else {
-              printf("Ignored\n");
-            }
+          assign_parent(packet, &parent, &has_parent, NODE_TYPE);
+        } else if (strcmp(packet.payload, "Parent Join") == 0) {
+          assign_child(packet, children_nodes, &children_nodes_count);
+        } else if (strcmp(packet.payload, "Parent Leave") == 0) {
+          unassign_child(packet, children_nodes, &children_nodes_count);
         }
         break;
       
       case 2:
-        nullnet_buf = (uint8_t *)&packet;
-        nullnet_len = sizeof(packet);
+        if (has_parent) {
+          nullnet_buf = (uint8_t *)&packet;
+          nullnet_len = sizeof(packet);
 
-        printf("#Network# Forwarding packet to %02x:%02x\n", parent.node_addr.u8[0], parent.node_addr.u8[1]);
-        NETSTACK_NETWORK.output(&parent.node_addr);
+          printf("#Network# Forwarding packet to %02x:%02x\n", parent.node_addr.u8[0], parent.node_addr.u8[1]);
+          NETSTACK_NETWORK.output(&parent.node_addr);
+        }
 
       default:
         break;
     }
   }
-}
-
-void send_node_hello() {
-  network_packet_t packet = {
-    .src_addr = linkaddr_node_addr,
-    .type = 0,
-    .payload = "Node Hello"
-  };
-
-  nullnet_buf = (uint8_t *)&packet;
-  nullnet_len = sizeof(packet);
-
-  printf("#Network# Broadcasting Node Hello\n");
-  NETSTACK_NETWORK.output(NULL);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -111,7 +72,7 @@ PROCESS_THREAD(light_sensor, ev, data)
   
   set_radio_channel();
   nullnet_set_input_callback(input_callback);
-  send_node_hello();
+  send_node_hello(NODE_TYPE);
 
   etimer_set(&cycle_timer, DAY_DURATION);
   etimer_set(&report_timer, REPORT_INTERVAL);
@@ -136,6 +97,9 @@ PROCESS_THREAD(light_sensor, ev, data)
     if(has_parent) {
       network_packet_t packet = {
         .src_addr = linkaddr_node_addr,
+        .src_type = NODE_TYPE,
+        .dst_addr = parent.node_addr,
+        .dst_type = parent.type,
         .type = 2,
         .signal_strength = parent.signal_strength,
       };
@@ -148,7 +112,7 @@ PROCESS_THREAD(light_sensor, ev, data)
 
       NETSTACK_NETWORK.output(&parent.node_addr);
     } else {
-        send_node_hello();
+        send_node_hello(NODE_TYPE);
     }
 
     etimer_reset(&report_timer);

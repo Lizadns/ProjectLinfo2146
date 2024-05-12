@@ -8,19 +8,13 @@
 
 #define BROADCAST_DELAY (CLOCK_SECOND * 30)
 
-static void broadcast_presence(void) {
-    network_packet_t packet;
-    packet.src_addr = linkaddr_node_addr;
-    packet.type = 0;
-    strcpy(packet.payload, "Sub-Gateway Hello");
+#define NODE_TYPE 1
 
-    nullnet_buf = (uint8_t *)&packet;
-    nullnet_len = sizeof(packet);
+static network_node_t parent;
+static uint8_t has_parent = 0;
 
-    printf("#Network# Broadcasting Sub-Gateway Hello\n");
-
-    NETSTACK_NETWORK.output(NULL);
-}
+static network_node_t children_nodes[20];
+static int children_nodes_count = 0;
 
 static void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const linkaddr_t *dest) {
     if (len == sizeof(network_packet_t)) {
@@ -31,17 +25,15 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
         {
             case 0:
                 if (strcmp(packet.payload, "Node Hello") == 0) {
-                    network_packet_t response = {
-                        .src_addr = linkaddr_node_addr,
-                        .type = 0,
-                        .payload = "Sub-Gateway Hello Response"
-                    };
-
-                    nullnet_buf = (uint8_t *)&response;
-                    nullnet_len = sizeof(response);
-
-                    printf("#Network# Sending Sub-Gateway Hello Response to %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
-                    NETSTACK_NETWORK.output(&packet.src_addr);
+                    if (packet.src_type == 0) {
+                        assign_parent(packet, &parent, &has_parent, NODE_TYPE);
+                    } else {
+                        send_node_hello_response(packet, 1);
+                    }
+                } else if (strcmp(packet.payload, "Parent Join") == 0) {
+                    assign_child(packet, children_nodes, &children_nodes_count);
+                } else if (strcmp(packet.payload, "Parent Leave") == 0) {
+                    unassign_child(packet, children_nodes, &children_nodes_count);
                 }
                 break;
             case 1:
@@ -73,7 +65,7 @@ PROCESS_THREAD(sub_gateway, ev, data) {
 
     while (1) {
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-        broadcast_presence();
+        send_node_hello(1);
         etimer_reset(&periodic_timer);
     }
 
