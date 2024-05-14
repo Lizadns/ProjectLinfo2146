@@ -10,12 +10,12 @@ void set_radio_channel(void) {
     NETSTACK_RADIO.set_value(RADIO_PARAM_CHANNEL, channel);
 }
 
-void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_t* has_parent, uint8_t node_type) {
+void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_t* has_parent, uint8_t node_type, uint8_t gateway_type) {
     int8_t rssi = packetbuf_attr(PACKETBUF_ATTR_RSSI);
 
     printf("#Routing# New node found: %02x:%02x, RSSI: %d dBm -> ", parent_hello.src_addr.u8[0], parent_hello.src_addr.u8[1], rssi);
 
-    if (!*has_parent || parent->type != 1 || rssi > parent->signal_strength) {
+    if (!*has_parent || parent->type != gateway_type || rssi > parent->signal_strength) {
         if (*has_parent) {
             leave_parent(*parent);
         }

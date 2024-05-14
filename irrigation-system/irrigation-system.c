@@ -29,12 +29,12 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
       case 0:
         if (strcmp(packet.payload, "Node Hello") == 0) {
           if (packet.src_type == 1) {
-            assign_parent(packet, &parent, &has_parent, NODE_TYPE);
+            assign_parent(packet, &parent, &has_parent, NODE_TYPE,1);
           } else {
             send_node_hello_response(packet, NODE_TYPE);
           }
         } else if (strcmp(packet.payload, "Node Hello Response") == 0) {
-          assign_parent(packet, &parent, &has_parent, NODE_TYPE);
+          assign_parent(packet, &parent, &has_parent, NODE_TYPE,1);
         } else if (strcmp(packet.payload, "Parent Join") == 0) {
           assign_child(packet, children_nodes, &children_nodes_count);
         } else if (strcmp(packet.payload, "Parent Leave") == 0) {

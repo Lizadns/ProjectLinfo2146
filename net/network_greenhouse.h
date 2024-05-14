@@ -35,7 +35,7 @@ void set_radio_channel(void);
         @param has_parent A flag indicating if the node has a parent
         @param node_type The type of the node
 */
-void assign_parent(network_packet_t packet, network_node_t* parent, uint8_t* has_parent, uint8_t node_type);
+void assign_parent(network_packet_t packet, network_node_t* parent, uint8_t* has_parent, uint8_t node_type,uint8_t gateway_type);
 
 /***
     Leave the parent node

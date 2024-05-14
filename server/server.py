@@ -14,8 +14,9 @@ def recv(sock):
 
 def send_periodic_messages(sock):
     while True:
-        sock.send(b"Start the Irrigation System\n")
-        time.sleep(20)
+        sock.send(b"Turn on the irrigation system!\n")
+        print("c fait!")
+        time.sleep(10)
 
 def main(ip, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,11 +27,14 @@ def main(ip, port):
 
     while(True):
         data = recv(sock)
+        #print(data.decode("utf-8"))
         if ("light intensity" in data.decode("utf-8")):
             result = data.decode("utf-8").replace("light intensity : ", "")
             print(result)
             if(int(result.strip()) < 15):
                 sock.send(b"Turn on the lights\n")
+        if("Start of the irrigation system" in data.decode("utf-8")):
+            print("Server knows that the irrigation system is started")
         time.sleep(1)
 
 
