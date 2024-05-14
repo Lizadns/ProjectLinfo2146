@@ -40,12 +40,26 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
                 printf("Received packet from %02x:%02x with signal strength %d \n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.signal_strength);
                 break;
             case 2:
-                printf("Received packet from %02x:%02x with payload: %s \n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
-                if(linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
-                    //if paquet for the server {{0,0},{0,0}}, it's forwarded to the parent = gateway
+                if (linkaddr_cmp(&packet.dst_addr, &linkaddr_node_addr)) {
+                    printf("Received packet from %02x:%02x with payload: %s\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
+                } else if(linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
                     nullnet_buf = (uint8_t *)&packet;
                     nullnet_len = sizeof(packet);
+
+                    printf("#Network# Forwarding packet to %02x:%02x with payload: %s\n", parent.node_addr.u8[0], parent.node_addr.u8[1], packet.payload);
+
                     NETSTACK_NETWORK.output(&parent.node_addr);
+                } else if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+                    nullnet_buf = (uint8_t *)&packet;
+                    nullnet_len = sizeof(packet);
+
+                    printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", packet.dst_type, packet.payload);
+
+                    for (int i = 0; i < children_nodes_count; i++) {
+                        if (children_nodes[i].type == packet.dst_type) {
+                            NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
+                        }
+                    }
                 }
                 break;
             default:

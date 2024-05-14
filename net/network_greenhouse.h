@@ -5,7 +5,7 @@
 
 #define CHANNEL 26
 
-static const linkaddr_t broadcast_addr = {{0xFF, 0xFF}};
+static const linkaddr_t multicast_addr = {{0xFF, 0xFF}};
 
 typedef struct {
     linkaddr_t src_addr;
@@ -14,7 +14,7 @@ typedef struct {
     uint8_t dst_type;
     uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data 
     int8_t signal_strength;
-    char payload[30];
+    char payload[64];
 } network_packet_t;
 
 typedef struct {

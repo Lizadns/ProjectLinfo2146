@@ -47,7 +47,7 @@
 #include "network_greenhouse.h"
 #include <stdio.h> /* For printf() */
 
-#define BROADCAST_DELAY (CLOCK_SECOND * 50)//toutes les 10 minutes
+#define BROADCAST_DELAY (CLOCK_SECOND * 120)//toutes les 10 minutes
 
 #define NODE_TYPE 0
 
@@ -89,8 +89,6 @@ PROCESS_THREAD(test_serial, ev, data)
 {
   static struct etimer periodic_timer;
 
-  //static struct etimer timer;
-
   PROCESS_BEGIN();
   serial_line_init();
   uart0_set_input(serial_line_input_byte);
@@ -99,52 +97,37 @@ PROCESS_THREAD(test_serial, ev, data)
   nullnet_set_input_callback(input_callback);
   etimer_set(&periodic_timer, BROADCAST_DELAY);
 
-
-  //etimer_set(&timer, CLOCK_SECOND * 1000);
-  printf("Starting process\n");
   while(1) {
+    PROCESS_WAIT_EVENT();
 
     if(ev == PROCESS_EVENT_TIMER && data == &periodic_timer) {
-    // Diffuser la présence
       send_node_hello(0);
-    // Réinitialiser le timer pour la prochaine diffusion
       etimer_reset(&periodic_timer);
     }
-    PROCESS_YIELD();
-    //printf("light intensity : 10\n");
    
-    if(ev==serial_line_event_message){
+    if(ev == serial_line_event_message){
       if (strcmp((char*)data,"Turn on the irrigation system!")==0){
-        // envoyer à tout le monde 
-        printf("%s \n",(char*) data);
+
+        printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", 3, (char*)data);
+
         for (int i = 0; i < children_nodes_count; i++) {
-            //printf("je suis ici\n");
             network_packet_t trigger_irrigation = {
             .src_addr = linkaddr_node_addr,
             .src_type = NODE_TYPE,
-            .dst_addr = children_nodes[i].node_addr,
-            .dst_type = children_nodes[i].type,
+            .dst_addr = multicast_addr,
+            .dst_type = 3,
             .type = 2,
-            .payload = "Turn on the irrigation system!"
+            .payload = "Turn on the irrigation system"
             };
             
             nullnet_buf = (uint8_t *)&trigger_irrigation;
             nullnet_len = sizeof(trigger_irrigation);
+
             NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
         }
       }
         
     }
-    
-  
-  
-    //else if(etimer_expired(&timer)){
-    //    printf("timer expired\n");
-    //    etimer_reset(&timer); 
-    //}
-
-    
-
   }
 
   PROCESS_END();
