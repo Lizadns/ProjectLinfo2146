@@ -72,4 +72,6 @@ void send_node_hello(uint8_t node_type);
 */
 void send_node_hello_response(network_packet_t packet, uint8_t node_type);
 
+linkaddr_t convert_to_linkaddr(uint16_t number);
+
 #endif /* NETWORK_GREENHOUSE_H_ */

@@ -127,3 +127,12 @@ void send_node_hello_response(network_packet_t packet, uint8_t node_type) {
 
     NETSTACK_NETWORK.output(&packet.src_addr);
 }
+
+linkaddr_t convert_to_linkaddr(uint16_t number) {
+    linkaddr_t addr;
+    // Nœud haut
+    addr.u8[0] = (uint8_t)(number & 0xFF);
+    // Nœud bas
+    addr.u8[1] = 0x00;
+    return addr;
+}

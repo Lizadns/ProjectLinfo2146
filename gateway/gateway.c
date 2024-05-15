@@ -46,6 +46,7 @@
 #include <string.h>
 #include "network_greenhouse.h"
 #include <stdio.h> /* For printf() */
+#include <stdlib.h>
 
 #define BROADCAST_DELAY (CLOCK_SECOND * 120)//toutes les 10 minutes
 
@@ -128,6 +129,33 @@ PROCESS_THREAD(test_serial, ev, data)
             NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
         }
       }
+      if(strstr((char*)data, "Turn on the lights in the greenhouse number:")){
+        printf("waw je suis ici\n");
+        char *colon_position = strchr((char*)data, ':');
+        if (colon_position != NULL) {
+            // Convertir la partie de la chaîne après ":" en entier
+            uint16_t number = atoi(colon_position + 1);
+            
+            linkaddr_t dst_greenhouse = convert_to_linkaddr(number);
+
+            network_packet_t trigger_light = {
+            .src_addr = linkaddr_node_addr,
+            .src_type = NODE_TYPE,
+            .dst_addr = dst_greenhouse,
+            .dst_type = 4,
+            .type = 2,
+            .payload = "Turn on the light"
+            };
+
+            nullnet_buf = (uint8_t *)&trigger_light;
+            nullnet_len = sizeof(trigger_light);
+
+            NETSTACK_NETWORK.output(&dst_greenhouse);
+
+            
+        }
+      }
+
         
     }
   }
