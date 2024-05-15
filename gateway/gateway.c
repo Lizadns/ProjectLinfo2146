@@ -62,15 +62,17 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
         switch (packet.type)
         {
           case 0:
-                if (strcmp(packet.payload, "Parent Join") == 0) {
-                    if (packet.src_type == 1){//sub-gateway
-                        assign_child(packet, children_nodes,&children_nodes_count);
-                    }
-                    else if (strcmp(packet.payload, "Parent Leave") == 0) {
-                        unassign_child(packet, children_nodes, &children_nodes_count);
-                    }
+            if (strcmp(packet.payload, "Node Hello") == 0) {
+              send_node_hello_response(packet, NODE_TYPE);
+            } else if (strcmp(packet.payload, "Parent Join") == 0) {
+                if (packet.src_type == 1){//sub-gateway
+                    assign_child(packet, children_nodes,&children_nodes_count);
                 }
-                break;
+                else if (strcmp(packet.payload, "Parent Leave") == 0) {
+                    unassign_child(packet, children_nodes, &children_nodes_count);
+                }
+            }
+            break;
           case 2:
                 printf("Received packet from %02x:%02x with payload: %s\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
                 break;

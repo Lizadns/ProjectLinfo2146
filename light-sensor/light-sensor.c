@@ -98,12 +98,12 @@ PROCESS_THREAD(light_sensor, ev, data)
       network_packet_t packet = {
         .src_addr = linkaddr_node_addr,
         .src_type = NODE_TYPE,
-        .dst_addr = parent.node_addr,
-        .dst_type = parent.type,
+        .dst_addr = linkaddr_null,
+        .dst_type = 0,
         .type = 2,
         .signal_strength = parent.signal_strength,
       };
-      sprintf(packet.payload, "%d", light_intensity);
+      sprintf(packet.payload, "Current temperature: %d", light_intensity);
 
       nullnet_buf = (uint8_t *)&packet;
       nullnet_len = sizeof(packet);
