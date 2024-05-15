@@ -130,7 +130,6 @@ PROCESS_THREAD(test_serial, ev, data)
         }
       }
       if(strstr((char*)data, "Turn on the lights in the greenhouse number:")){
-        printf("waw je suis ici\n");
         char *colon_position = strchr((char*)data, ':');
         if (colon_position != NULL) {
             // Convertir la partie de la chaîne après ":" en entier
