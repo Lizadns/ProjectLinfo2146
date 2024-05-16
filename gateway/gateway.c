@@ -75,13 +75,13 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
             }
             break;
           case 2:
-                printf("Received packet from %02x:%02x with payload: %s\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
-                break;
+            printf("Received packet from %02x:%02x with payload: %s\n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.payload);
+            break;
           default:
-                printf("Recieved an unknown packet type from %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
-                break;
+            printf("Recieved an unknown packet type from %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
+            break;
         }
-}
+  }
 }
 
 /*---------------------------------------------------------------------------*/
@@ -104,7 +104,7 @@ PROCESS_THREAD(test_serial, ev, data)
     PROCESS_WAIT_EVENT();
 
     if(ev == PROCESS_EVENT_TIMER && data == &periodic_timer) {
-      send_node_hello(0);
+      send_node_hello(NODE_TYPE);
       etimer_reset(&periodic_timer);
     }
    
@@ -134,13 +134,15 @@ PROCESS_THREAD(test_serial, ev, data)
         if (colon_position != NULL) {
             // Convertir la partie de la chaîne après ":" en entier
             uint16_t number = atoi(colon_position + 1);
+
+            printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", 4, "Turn on the light");
             
             linkaddr_t dst_greenhouse = convert_to_linkaddr(number);
 
             network_packet_t trigger_light = {
             .src_addr = linkaddr_node_addr,
             .src_type = NODE_TYPE,
-            .dst_addr = dst_greenhouse,
+            .dst_addr = multicast_addr,
             .dst_type = 4,
             .type = 2,
             .payload = "Turn on the light"

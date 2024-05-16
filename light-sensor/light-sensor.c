@@ -108,7 +108,7 @@ PROCESS_THREAD(light_sensor, ev, data)
       nullnet_buf = (uint8_t *)&packet;
       nullnet_len = sizeof(packet);
 
-      printf("#Network# Sending %d to %02x:%02x\n", light_intensity, parent.node_addr.u8[0], parent.node_addr.u8[1]);
+      printf("#Network# Sending 'Current temperature:%d' to %02x:%02x\n", light_intensity, parent.node_addr.u8[0], parent.node_addr.u8[1]);
 
       NETSTACK_NETWORK.output(&parent.node_addr);
     } else {

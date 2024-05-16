@@ -16,6 +16,11 @@ void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_
     printf("#Routing# New node found: %02x:%02x, RSSI: %d dBm -> ", parent_hello.src_addr.u8[0], parent_hello.src_addr.u8[1], rssi);
 
     if (!*has_parent || parent->type != gateway_type || rssi > parent->signal_strength) {
+        if (parent->type == gateway_type && parent_hello.src_type != gateway_type) {
+            printf("Ignored\n");
+            return;
+        }
+
         if (*has_parent) {
             leave_parent(*parent);
         }
