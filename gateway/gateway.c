@@ -48,7 +48,7 @@
 #include <stdio.h> /* For printf() */
 #include <stdlib.h>
 
-#define BROADCAST_DELAY (CLOCK_SECOND * 120)//toutes les 10 minutes
+#define BROADCAST_DELAY (CLOCK_SECOND * 120)//toutes les 2 minutes
 
 #define NODE_TYPE 0
 
@@ -129,7 +129,7 @@ PROCESS_THREAD(test_serial, ev, data)
             NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
         }
       }
-      if(strstr((char*)data, "Turn on the lights in the greenhouse number:")){
+      if(strstr((char*)data, "Turn on the lights in the greenhouse number: ")){
         char *colon_position = strchr((char*)data, ':');
         if (colon_position != NULL) {
             // Convertir la partie de la chaîne après ":" en entier
