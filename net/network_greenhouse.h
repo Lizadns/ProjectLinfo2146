@@ -12,14 +12,14 @@ typedef struct {
     linkaddr_t dst_addr;
     uint8_t src_type;
     uint8_t dst_type;
-    uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data 
+    uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data, 3 = Mobile Terminal
     int8_t signal_strength;
     char payload[64];
 } network_packet_t;
 
 typedef struct {
     linkaddr_t node_addr;
-    uint8_t type; // 0 = Gateway, 1 = Sub-Gateway, 2 = Light Sensor, 3 = Irrigation System, 4 = Light Bulb
+    uint8_t type; // 0 = Gateway, 1 = Sub-Gateway, 2 = Light Sensor, 3 = Irrigation System, 4 = Light Bulb, 5= Mobile Terminal
     int8_t signal_strength;
 } network_node_t;
 
