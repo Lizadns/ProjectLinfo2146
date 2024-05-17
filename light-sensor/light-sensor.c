@@ -94,7 +94,7 @@ PROCESS_THREAD(light_sensor, ev, data)
 {
   static struct etimer report_timer;
   static struct etimer cycle_timer;
-  static int is_day = 0;
+  static int is_day = 1;
   static uint8_t light_intensity;
 
   PROCESS_BEGIN()
