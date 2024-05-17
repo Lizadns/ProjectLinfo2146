@@ -47,19 +47,30 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
         break;
       
       case 2:
+        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+            nullnet_buf = (uint8_t *)&packet;
+            nullnet_len = sizeof(packet);
+
+            printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", packet.dst_type, packet.payload);
+
+            for (int i = 0; i < children_nodes_count; i++) {
+              NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
+            }
+        }
+
         if (packet.dst_type == NODE_TYPE) {
           if (strcmp(packet.payload, "Turn on the light") == 0) {
             process_post(&light, event_data_ready, NULL);
           }
-        } else {
-          if (has_parent) {
+        } else if(has_parent && linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
+            packet.src_addr = linkaddr_node_addr;
+
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 
-            printf("#Network# Forwarding packet to %02x:%02x\n", parent.node_addr.u8[0], parent.node_addr.u8[1]);
+            printf("#Network# Forwarding packet to %02x:%02x with payload: %s\n", parent.node_addr.u8[0], parent.node_addr.u8[1], packet.payload);
             NETSTACK_NETWORK.output(&parent.node_addr);
-          }
-        }
+        } 
         break;
 
       default:
@@ -75,6 +86,7 @@ AUTOSTART_PROCESSES(&light);
 PROCESS_THREAD(light, ev, data)
 {   
   static struct etimer report_timer;
+  static struct etimer broadcast_timer;
   PROCESS_BEGIN();
 
   event_data_ready = process_alloc_event();
@@ -82,8 +94,15 @@ PROCESS_THREAD(light, ev, data)
   nullnet_set_input_callback(input_callback);
   send_node_hello(NODE_TYPE);
 
+  etimer_set(&broadcast_timer, CLOCK_SECOND * 30);
+
   while(1) {
     PROCESS_WAIT_EVENT();
+
+    if(etimer_expired(&broadcast_timer)) {
+      send_node_hello(NODE_TYPE);
+      etimer_reset(&broadcast_timer);
+    }
     
     if(ev == event_data_ready) {
         printf("#Operation# Light : Start\n");

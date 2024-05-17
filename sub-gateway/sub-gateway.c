@@ -67,9 +67,7 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
                     printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", packet.dst_type, packet.payload);
 
                     for (int i = 0; i < children_nodes_count; i++) {
-                        if (children_nodes[i].type == packet.dst_type) {
-                            NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
-                        }
+                        NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
                     }
                 }
                 case 3:
