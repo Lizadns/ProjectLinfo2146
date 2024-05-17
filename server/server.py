@@ -28,26 +28,25 @@ def main(ip, port):
 
     while(True):
         data = recv(sock)
-        #print(data.decode("utf-8"))
-        if ("Current temperature" in data.decode("utf-8")):
-            temperature_pattern = r'Current temperature: (\d+)'
-            source_pattern = r'from (\d{2}:\d{2})'
-            temperature = None
+        if ("Current light_intensity" in data.decode("utf-8")):
+            light_intensity_pattern = r'Current light_intensity: (\d+)'
+            light_intensity = None
             source = None
 
             # Rechercher la température dans la chaîne
-            temperature_match = re.search(temperature_pattern, data.decode("utf-8"))
-            if temperature_match:
-                temperature = int(temperature_match.group(1))
-                print("Current temperature:", temperature)
+            light_intensity_match = re.search(light_intensity_pattern, data.decode("utf-8"))
+            if light_intensity_match:
+                light_intensity = int(light_intensity_match.group(1))
+                print("Current light_intensity:", light_intensity)
 
             # Rechercher la source du message dans la chaîne
+            source_pattern = r'from ([0-9a-fA-F]{2}:[0-9a-fA-F]{2})'
             source_match = re.search(source_pattern, data.decode("utf-8"))
             if source_match:
                 source = source_match.group(1)
                 print("Source:", source)
 
-            if(temperature<65):
+            if(light_intensity<65):
                 print("Ask to turn on the lights of the greenhouse ",source,"\n")
                 message = "Turn on the lights in the greenhouse number: " + source + "\n"
                 sock.send(message.encode())

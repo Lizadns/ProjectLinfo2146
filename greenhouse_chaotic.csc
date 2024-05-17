@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simconf version="2023090101">
   <simulation>
-    <title>Greenhouse</title>
+    <title>Greenhouse_Classic</title>
     <speedlimit>1.0</speedlimit>
-    <randomseed>123457</randomseed>
+    <randomseed>123456</randomseed>
     <motedelay_us>1000000</motedelay_us>
     <radiomedium>
       org.contikios.cooja.radiomediums.UDGM
@@ -35,7 +35,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="55.44379883418021" y="-14.615384903484998" />
+          <pos x="21.373408625250622" y="55.106047882019325" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -63,11 +63,21 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="93.48236315874537" y="-14.317915650020403" />
+          <pos x="56.026849085662306" y="55.41299627327586" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>3</id>
+          <id>2</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="62.335665429316286" y="80.6506417030906" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>10</id>
         </interface_config>
       </mote>
     </motetype>
@@ -91,17 +101,27 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="121.7162403716471" y="12.471299231546844" />
+          <pos x="91.19715455977989" y="76.94604562589697" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>6</id>
+          <id>4</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="60.150102443687736" y="26.005560995685286" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>12</id>
         </interface_config>
       </mote>
     </motetype>
     <motetype>
       org.contikios.cooja.mspmote.Z1MoteType
-      <description>Irrigation</description>
+      <description>IrrigationSystem</description>
       <source>[CONFIG_DIR]/irrigation-system/irrigation-system.c</source>
       <commands>$(MAKE) -j$(CPUS) irrigation-system.z1 TARGET=z1</commands>
       <firmware>[CONFIG_DIR]/irrigation-system/build/z1/irrigation-system.z1</firmware>
@@ -119,11 +139,21 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="158.38843772379022" y="4.396645762982089" />
+          <pos x="75.38990985013133" y="49.758572495696086" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>8</id>
+          <id>6</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="47.87562213976618" y="100.84180287271859" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>13</id>
         </interface_config>
       </mote>
     </motetype>
@@ -147,27 +177,47 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="126.02096910350076" y="-14.580405224780156" />
+          <pos x="76.34138631105462" y="74.94203717929796" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>5</id>
+          <id>8</id>
         </interface_config>
       </mote>
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="144.42640621098113" y="3.8207123096178766" />
+          <pos x="93.32118969627507" y="44.348998151029946" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>7</id>
+          <id>9</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="88.07405943721939" y="15.332503359941683" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>11</id>
+        </interface_config>
+      </mote>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="80.24818408383325" y="119.09665905821034" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>14</id>
         </interface_config>
       </mote>
     </motetype>
     <motetype>
       org.contikios.cooja.mspmote.Z1MoteType
-      <description>Mobile</description>
+      <description>MobileTerminal</description>
       <source>[CONFIG_DIR]/mobileTerminal/mobileTerminal.c</source>
       <commands>$(MAKE) -j$(CPUS) mobileTerminal.z1 TARGET=z1</commands>
       <firmware>[CONFIG_DIR]/mobileTerminal/build/z1/mobileTerminal.z1</firmware>
@@ -193,27 +243,18 @@
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
-      <viewport>2.905346890516451 0.0 0.0 2.905346890516451 -132.38862776184502 202.0376769430513</viewport>
+      <viewport>2.1287581650861327 0.0 0.0 2.1287581650861327 39.20572792514825 14.169646665151989</viewport>
     </plugin_config>
-    <bounds x="2" y="120" height="400" width="392" z="3" />
+    <bounds x="3" y="116" height="400" width="400" z="4" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
     <plugin_config>
-      <filter>Children</filter>
+      <filter>DEBUG</filter>
       <formatted_time />
       <coloring />
     </plugin_config>
-    <bounds x="400" y="0" height="983" width="1212" z="2" />
-  </plugin>
-  <plugin>
-    org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>3</mote_arg>
-    <plugin_config>
-      <interface>Leds</interface>
-      <scrollpos>0,0</scrollpos>
-    </plugin_config>
-    <bounds x="17" y="523" height="175" width="350" z="5" />
+    <bounds x="400" y="0" height="983" width="1212" z="5" />
   </plugin>
   <plugin>
     org.contikios.cooja.serialsocket.SerialSocketServer
@@ -226,11 +267,38 @@
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>4</mote_arg>
+    <mote_arg>9</mote_arg>
     <plugin_config>
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="17" y="665" height="300" width="350" z="4" />
+    <bounds x="5" y="499" height="141" width="350" z="3" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>8</mote_arg>
+    <plugin_config>
+      <interface>Leds</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="2" y="609" height="144" width="350" z="2" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>7</mote_arg>
+    <plugin_config>
+      <interface>Leds</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="-1" y="721" height="134" width="350" z="1" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>10</mote_arg>
+    <plugin_config>
+      <interface>Leds</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="3" y="837" height="142" width="350" />
   </plugin>
 </simconf>

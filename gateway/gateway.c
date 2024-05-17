@@ -134,7 +134,7 @@ PROCESS_THREAD(test_serial, ev, data)
         char *colon_position = strchr((char*)data, ':');
         if (colon_position != NULL) {
             // Convertir la partie de la chaîne après ":" en entier
-            uint16_t number = atoi(colon_position + 1);
+            uint16_t number = (uint16_t)strtol(colon_position + 1, NULL, 16);
 
             printf("#Network# Multi-casting packet to children nodes of type %d with payload: %s\n", 4, "Turn on the light");
             

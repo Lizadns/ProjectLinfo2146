@@ -132,12 +132,12 @@ PROCESS_THREAD(light_sensor, ev, data)
         .type = 2,
         .distance_to_gateway = parent.distance_to_gateway,
       };
-      sprintf(packet.payload, "Current temperature: %d", light_intensity);
+      sprintf(packet.payload, "Current light_intensity: %d", light_intensity);
 
       nullnet_buf = (uint8_t *)&packet;
       nullnet_len = sizeof(packet);
 
-      printf("#Network# Sending 'Current temperature:%d' to %02x:%02x\n", light_intensity, parent.node_addr.u8[0], parent.node_addr.u8[1]);
+      printf("#Network# Sending 'Current light_intensity:%d' to %02x:%02x\n", light_intensity, parent.node_addr.u8[0], parent.node_addr.u8[1]);
 
       NETSTACK_NETWORK.output(&parent.node_addr);
     } else {
