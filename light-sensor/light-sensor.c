@@ -9,7 +9,7 @@
 
 #define DAY_DURATION (600 * CLOCK_SECOND)
 #define NIGHT_DURATION (600 * CLOCK_SECOND)
-#define REPORT_INTERVAL (10 * CLOCK_SECOND)
+#define REPORT_INTERVAL (30 * CLOCK_SECOND)
 
 #define NODE_TYPE 2
 
@@ -94,7 +94,7 @@ PROCESS_THREAD(light_sensor, ev, data)
 {
   static struct etimer report_timer;
   static struct etimer cycle_timer;
-  static int is_day = 1;
+  static int is_day = 0;
   static uint8_t light_intensity;
 
   PROCESS_BEGIN()

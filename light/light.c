@@ -11,7 +11,7 @@
 #include "dev/leds.h"
 
 #define NODE_TYPE 4
-#define LIGHTING_TIME 30
+#define LIGHTING_TIME 29
 
 static process_event_t event_data_ready;
 

@@ -99,6 +99,7 @@ PROCESS_THREAD(test_serial, ev, data)
   set_radio_channel();
   nullnet_set_input_callback(input_callback);
   etimer_set(&periodic_timer, BROADCAST_DELAY);
+  send_node_hello(NODE_TYPE);
 
   while(1) {
     PROCESS_WAIT_EVENT();
