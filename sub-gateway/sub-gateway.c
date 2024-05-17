@@ -36,7 +36,7 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
                         printf("There is a mobile_phone in the greenhouse %02x:%02x\n",linkaddr_node_addr.u8[0],linkaddr_node_addr.u8[1]);
                     }
                     else {
-                        send_node_hello_response(packet, 1);
+                        send_node_hello_response(packet, NODE_TYPE, parent.distance_to_gateway);
                     }
                 } else if (strcmp(packet.payload, "Node Hello Response") == 0) {
                     assign_parent(packet, &parent, &has_parent, NODE_TYPE,0);
@@ -47,7 +47,6 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
                 }
                 break;
             case 1:
-                printf("Received packet from %02x:%02x with signal strength %d \n", packet.src_addr.u8[0], packet.src_addr.u8[1], packet.signal_strength);
                 break;
             case 2:
                 if (linkaddr_cmp(&packet.dst_addr, &linkaddr_node_addr)) {
@@ -96,13 +95,13 @@ PROCESS_THREAD(sub_gateway, ev, data) {
 
     set_radio_channel();
     nullnet_set_input_callback(input_callback);
-    send_node_hello(NODE_TYPE);
+    send_node_hello(NODE_TYPE, parent.distance_to_gateway);
 
     etimer_set(&periodic_timer, BROADCAST_DELAY);
 
     while (1) {
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
-        send_node_hello(NODE_TYPE);
+        send_node_hello(NODE_TYPE, parent.distance_to_gateway);
         etimer_reset(&periodic_timer);
     }
 

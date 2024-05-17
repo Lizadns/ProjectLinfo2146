@@ -64,7 +64,7 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
         {
           case 0:
             if (strcmp(packet.payload, "Node Hello") == 0) {
-              send_node_hello_response(packet, NODE_TYPE);
+              send_node_hello_response(packet, NODE_TYPE, -1);
             } else if (strcmp(packet.payload, "Parent Join") == 0) {
                 if (packet.src_type == 1){//sub-gateway
                     assign_child(packet, children_nodes,&children_nodes_count);
@@ -99,13 +99,13 @@ PROCESS_THREAD(test_serial, ev, data)
   set_radio_channel();
   nullnet_set_input_callback(input_callback);
   etimer_set(&periodic_timer, BROADCAST_DELAY);
-  send_node_hello(NODE_TYPE);
+  send_node_hello(NODE_TYPE, -1);
 
   while(1) {
     PROCESS_WAIT_EVENT();
 
     if(ev == PROCESS_EVENT_TIMER && data == &periodic_timer) {
-      send_node_hello(NODE_TYPE);
+      send_node_hello(NODE_TYPE, -1);
       etimer_reset(&periodic_timer);
     }
    

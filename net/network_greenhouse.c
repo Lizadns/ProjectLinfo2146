@@ -16,7 +16,7 @@ void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_
     printf("#Routing# New node found: %02x:%02x, RSSI: %d dBm -> ", parent_hello.src_addr.u8[0], parent_hello.src_addr.u8[1], rssi);
 
     if (!*has_parent || parent->type != gateway_type || rssi > parent->signal_strength){
-        if ((parent->type == gateway_type && parent_hello.src_type != gateway_type) || linkaddr_cmp(&parent_hello.src_addr, &parent->node_addr) != 0) {
+        if ((parent->type == gateway_type && parent_hello.src_type != gateway_type) || linkaddr_cmp(&parent_hello.src_addr, &parent->node_addr) == 1 || (parent_hello.src_type != gateway_type && parent_hello.distance_to_gateway >= parent->distance_to_gateway)) {
             printf("Ignored\n");
             return;
         }
@@ -28,6 +28,7 @@ void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_
         parent->node_addr = parent_hello.src_addr;
         parent->type = parent_hello.src_type;
         parent->signal_strength = rssi;
+        parent->distance_to_gateway = parent_hello.distance_to_gateway;
 
         *has_parent = 1;
 
@@ -47,7 +48,7 @@ void assign_parent(network_packet_t parent_hello, network_node_t* parent, uint8_
 
         NETSTACK_NETWORK.output(&parent_hello.src_addr);
     } else {
-        printf("Ignored\n");
+        printf("Skipped\n");
     }
 }
 
@@ -98,12 +99,12 @@ void unassign_child(network_packet_t child_packet, network_node_t* children_node
     printf("\n");
 }
 
-void send_node_hello(uint8_t node_type) {
+void send_node_hello(uint8_t node_type, uint8_t distance_to_gateway) {
     network_packet_t packet = {
         .src_addr = linkaddr_node_addr,
         .src_type = node_type,
         .type = 0,
-        .signal_strength = 0,
+        .distance_to_gateway = distance_to_gateway,
         .payload = "Node Hello"
     };
 
@@ -115,12 +116,13 @@ void send_node_hello(uint8_t node_type) {
     NETSTACK_NETWORK.output(NULL);
 }
 
-void send_node_hello_response(network_packet_t packet, uint8_t node_type) {
+void send_node_hello_response(network_packet_t packet, uint8_t node_type, uint8_t distance_to_gateway) {
     network_packet_t response = {
         .src_addr = linkaddr_node_addr,
         .src_type = node_type,
         .dst_addr = packet.src_addr,
         .dst_type = packet.src_type,
+        .distance_to_gateway = distance_to_gateway,
         .type = 0,
         .payload = "Node Hello Response"
     };

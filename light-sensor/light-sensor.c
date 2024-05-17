@@ -31,7 +31,7 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
           if (packet.src_type == 1) {
             assign_parent(packet, &parent, &has_parent, NODE_TYPE,1);
           } else {
-            send_node_hello_response(packet, NODE_TYPE);
+            send_node_hello_response(packet, NODE_TYPE, parent.distance_to_gateway);
           }
         } else if (strcmp(packet.payload, "Node Hello Response") == 0) {
           assign_parent(packet, &parent, &has_parent, NODE_TYPE,1);
@@ -62,7 +62,7 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
               .dst_addr = packet.src_addr,
               .dst_type = 5,
               .type = 2,
-              .signal_strength = 0,
+              .distance_to_gateway = parent.distance_to_gateway,
             };
             sprintf(response.payload, "Check up response from the light sensor");
 
@@ -101,7 +101,7 @@ PROCESS_THREAD(light_sensor, ev, data)
   
   set_radio_channel();
   nullnet_set_input_callback(input_callback);
-  send_node_hello(NODE_TYPE);
+  send_node_hello(NODE_TYPE, parent.distance_to_gateway);
 
   etimer_set(&cycle_timer, DAY_DURATION);
   etimer_set(&report_timer, REPORT_INTERVAL);
@@ -130,7 +130,7 @@ PROCESS_THREAD(light_sensor, ev, data)
         .dst_addr = linkaddr_null,
         .dst_type = 0,
         .type = 2,
-        .signal_strength = parent.signal_strength,
+        .distance_to_gateway = parent.distance_to_gateway,
       };
       sprintf(packet.payload, "Current temperature: %d", light_intensity);
 
@@ -141,7 +141,7 @@ PROCESS_THREAD(light_sensor, ev, data)
 
       NETSTACK_NETWORK.output(&parent.node_addr);
     } else {
-        send_node_hello(NODE_TYPE);
+        send_node_hello(NODE_TYPE, parent.distance_to_gateway);
     }
 
     etimer_reset(&report_timer);

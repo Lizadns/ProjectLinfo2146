@@ -65,7 +65,7 @@ PROCESS_THREAD(mobile_terminal, ev, data) {
 
     nullnet_set_input_callback(input_callback);
 
-    send_node_hello(NODE_TYPE);
+    send_node_hello(NODE_TYPE, 1);
 
     etimer_set(&periodic_timer, BROADCAST_DELAY);
     etimer_set(&hello_timeout_timer, HELLO_TIMEOUT);
@@ -76,7 +76,7 @@ PROCESS_THREAD(mobile_terminal, ev, data) {
 
         if (ev == PROCESS_EVENT_TIMER) {
             if (data == &periodic_timer) {
-                send_node_hello(NODE_TYPE);
+                send_node_hello(NODE_TYPE, 1);
                 etimer_reset(&periodic_timer);
             } else if (data == &hello_timeout_timer) {
                 printf("No 'Node Hello' received from src_type 1 in the last minute. Resetting subgateway_id.\n");
@@ -93,7 +93,7 @@ PROCESS_THREAD(mobile_terminal, ev, data) {
                 .dst_addr = multicast_addr,
                 .dst_type = 2,
                 .type = 2,
-                .signal_strength = subgateway_id.signal_strength,
+                .distance_to_gateway = 1,
                 .payload = "Check up from the mobile terminal"
             };
 

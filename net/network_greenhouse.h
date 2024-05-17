@@ -13,13 +13,14 @@ typedef struct {
     uint8_t src_type;
     uint8_t dst_type;
     uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data
-    int8_t signal_strength;
+    int8_t distance_to_gateway;
     char payload[64];
 } network_packet_t;
 
 typedef struct {
     linkaddr_t node_addr;
     uint8_t type; // 0 = Gateway, 1 = Sub-Gateway, 2 = Light Sensor, 3 = Irrigation System, 4 = Light Bulb, 5= Mobile Terminal
+    int8_t distance_to_gateway;
     int8_t signal_strength;
 } network_node_t;
 
@@ -63,15 +64,21 @@ void unassign_child(network_packet_t child_packet, network_node_t* children_node
     Send a Node Hello packet to the network
         @param node_type The type of the node sending the packet
 */
-void send_node_hello(uint8_t node_type);
+void send_node_hello(uint8_t node_type, uint8_t distance_to_gateway);
 
 /***
     Send a Node Hello Response to the source of the received packet
         @param packet The received packet
         @param node_type The type of the node sending the response
 */
-void send_node_hello_response(network_packet_t packet, uint8_t node_type);
+void send_node_hello_response(network_packet_t packet, uint8_t node_type, uint8_t distance_to_gateway);
 
+
+/*** 
+    Convert a linkaddr_t to a uint16_t
+        @param addr The linkaddr_t to convert
+        @return The converted uint16_t
+*/
 linkaddr_t convert_to_linkaddr(uint16_t number);
 
 #endif /* NETWORK_GREENHOUSE_H_ */

@@ -63,17 +63,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="15.249836915102989" y="-15.144422303287893" />
-        </interface_config>
-        <interface_config>
-          org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>2</id>
-        </interface_config>
-      </mote>
-      <mote>
-        <interface_config>
-          org.contikios.cooja.interfaces.Position
-          <pos x="95.3024737703494" y="-15.531322724423083" />
+          <pos x="93.48236315874537" y="-14.317915650020403" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -101,7 +91,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="129.97487944631794" y="-40.47710566860483" />
+          <pos x="121.7162403716471" y="12.471299231546844" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -129,11 +119,11 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="126.20657856659288" y="-5.642434251818952" />
+          <pos x="158.38843772379022" y="4.396645762982089" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>7</id>
+          <id>8</id>
         </interface_config>
       </mote>
     </motetype>
@@ -157,21 +147,21 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="124.78270863241661" y="21.94172599632845" />
+          <pos x="126.02096910350076" y="-14.580405224780156" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>4</id>
+          <id>5</id>
         </interface_config>
       </mote>
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="157.96305532496362" y="-61.62106651834146" />
+          <pos x="144.42640621098113" y="3.8207123096178766" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
-          <id>5</id>
+          <id>7</id>
         </interface_config>
       </mote>
     </motetype>
@@ -203,37 +193,27 @@
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
-      <viewport>1.6482514748684267 0.0 0.0 1.6482514748684267 46.57301967176438 198.22854354638503</viewport>
+      <viewport>2.905346890516451 0.0 0.0 2.905346890516451 -132.38862776184502 202.0376769430513</viewport>
     </plugin_config>
-    <bounds x="2" y="120" height="400" width="400" z="2" />
+    <bounds x="2" y="120" height="400" width="392" z="3" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
     <plugin_config>
-      <filter>INFO</filter>
+      <filter>Children</filter>
       <formatted_time />
       <coloring />
-      <inversefilter />
     </plugin_config>
-    <bounds x="400" y="0" height="983" width="1212" z="3" />
+    <bounds x="400" y="0" height="983" width="1212" z="2" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>6</mote_arg>
+    <mote_arg>3</mote_arg>
     <plugin_config>
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="6" y="637" height="175" width="350" z="6" />
-  </plugin>
-  <plugin>
-    org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>5</mote_arg>
-    <plugin_config>
-      <interface>Leds</interface>
-      <scrollpos>0,0</scrollpos>
-    </plugin_config>
-    <bounds x="3" y="817" height="165" width="350" z="5" />
+    <bounds x="17" y="523" height="175" width="350" z="5" />
   </plugin>
   <plugin>
     org.contikios.cooja.serialsocket.SerialSocketServer
@@ -242,6 +222,15 @@
       <port>60005</port>
       <bound>true</bound>
     </plugin_config>
-    <bounds x="0" y="0" height="116" width="362" z="4" />
+    <bounds x="0" y="0" height="116" width="362" z="6" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>4</mote_arg>
+    <plugin_config>
+      <interface>Leds</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="17" y="665" height="300" width="350" z="4" />
   </plugin>
 </simconf>
