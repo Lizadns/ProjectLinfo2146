@@ -41,7 +41,10 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
                     }
                 }
                 break;
-            case 3:
+            case 2:
+                if (strcmp(subgateway_hello.payload, "Check up response from the light sensor") == 0) {
+                    printf("Received 'Check up response from the light sensor' from %02x:%02x\n", subgateway_hello.src_addr.u8[0], subgateway_hello.src_addr.u8[1]);
+                }
                 break;
             default:
                 break;
@@ -87,9 +90,9 @@ PROCESS_THREAD(mobile_terminal, ev, data) {
             network_packet_t packet = {
                 .src_addr = linkaddr_node_addr,
                 .src_type = NODE_TYPE,
-                .dst_addr = subgateway_id.node_addr,
+                .dst_addr = multicast_addr,
                 .dst_type = 2,
-                .type = 3,
+                .type = 2,
                 .signal_strength = subgateway_id.signal_strength,
                 .payload = "Check up from the mobile terminal"
             };

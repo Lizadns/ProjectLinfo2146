@@ -46,7 +46,7 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
         break;
       
       case 2:
-        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr) && children_nodes_count > 0){
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 
@@ -79,8 +79,6 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
             process_post(&irrigation_system, event_data_ready, NULL);
           }
         } else if(has_parent && linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
-            packet.src_addr = linkaddr_node_addr;
-
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 

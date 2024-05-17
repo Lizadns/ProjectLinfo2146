@@ -3,7 +3,7 @@
   <simulation>
     <title>Greenhouse</title>
     <speedlimit>2.0</speedlimit>
-    <randomseed>123456</randomseed>
+    <randomseed>123457</randomseed>
     <motedelay_us>1000000</motedelay_us>
     <radiomedium>
       org.contikios.cooja.radiomediums.UDGM
@@ -101,7 +101,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="21.463156291238107" y="68.38616121138223" />
+          <pos x="18.988080586653158" y="64.06611075178833" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -177,7 +177,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="57.75603919012398" y="110.75926735488497" />
+          <pos x="61.49131679386086" y="80.87704652498996" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -195,6 +195,34 @@
         </interface_config>
       </mote>
     </motetype>
+    <motetype>
+      org.contikios.cooja.mspmote.Z1MoteType
+      <description>Mobile</description>
+      <source>[CONFIG_DIR]/mobileTerminal/mobileTerminal.c</source>
+      <commands>$(MAKE) -j$(CPUS) mobileTerminal.z1 TARGET=z1</commands>
+      <firmware>[CONFIG_DIR]/mobileTerminal/build/z1/mobileTerminal.z1</firmware>
+      <moteinterface>org.contikios.cooja.interfaces.Position</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.IPAddress</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.Mote2MoteRelations</moteinterface>
+      <moteinterface>org.contikios.cooja.interfaces.MoteAttributes</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspClock</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspMoteID</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspButton</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDefaultSerial</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspLED</moteinterface>
+      <moteinterface>org.contikios.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
+      <mote>
+        <interface_config>
+          org.contikios.cooja.interfaces.Position
+          <pos x="22.704157309321914" y="77.2315113263923" />
+        </interface_config>
+        <interface_config>
+          org.contikios.cooja.mspmote.interfaces.MspMoteID
+          <id>10</id>
+        </interface_config>
+      </mote>
+    </motetype>
   </simulation>
   <plugin>
     org.contikios.cooja.plugins.Visualizer
@@ -205,27 +233,18 @@
       <skin>org.contikios.cooja.plugins.skins.TrafficVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.UDGMVisualizerSkin</skin>
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
-      <viewport>1.87402403317949 0.0 0.0 1.87402403317949 22.678202683005615 48.3574772515928</viewport>
+      <viewport>1.7674890308083313 0.0 0.0 1.7674890308083313 22.61812574950146 59.733269501693535</viewport>
     </plugin_config>
     <bounds x="7" y="60" height="400" width="400" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
     <plugin_config>
-      <filter>ID:</filter>
+      <filter />
       <formatted_time />
       <coloring />
     </plugin_config>
     <bounds x="400" y="0" height="983" width="1212" z="1" />
-  </plugin>
-  <plugin>
-    org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>6</mote_arg>
-    <plugin_config>
-      <interface>Leds</interface>
-      <scrollpos>0,0</scrollpos>
-    </plugin_config>
-    <bounds x="25" y="410" height="300" width="350" z="4" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
@@ -243,6 +262,15 @@
       <port>60005</port>
       <bound>true</bound>
     </plugin_config>
-    <bounds x="0" y="0" height="116" width="362" z="2" />
+    <bounds x="0" y="0" height="116" width="362" z="4" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>8</mote_arg>
+    <plugin_config>
+      <interface>Leds</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="27" y="411" height="300" width="350" z="2" />
   </plugin>
 </simconf>

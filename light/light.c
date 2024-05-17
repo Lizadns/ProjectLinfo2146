@@ -47,7 +47,7 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
         break;
       
       case 2:
-        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr) && children_nodes_count > 0){
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 
@@ -63,8 +63,6 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
             process_post(&light, event_data_ready, NULL);
           }
         } else if(has_parent && linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
-            packet.src_addr = linkaddr_node_addr;
-
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 
@@ -105,13 +103,13 @@ PROCESS_THREAD(light, ev, data)
     }
     
     if(ev == event_data_ready) {
-        printf("#Operation# Light : Start\n");
+      printf("#Operation# Light : Start\n");
 	    leds_toggle(LEDS_ALL);
-        etimer_set(&report_timer, CLOCK_SECOND * LIGHTING_TIME);
-        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&report_timer));
-        printf("#Operation# Light : End\n");
+      etimer_set(&report_timer, CLOCK_SECOND * LIGHTING_TIME);
+      PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&report_timer));
+      printf("#Operation# Light : End\n");
 	    leds_off(LEDS_ALL);
-        etimer_reset(&report_timer);
+      etimer_reset(&report_timer);
     }
   }		
   PROCESS_END();

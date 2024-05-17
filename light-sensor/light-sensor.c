@@ -43,7 +43,7 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
         break;
       
       case 2:
-        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+        if(linkaddr_cmp(&packet.dst_addr, &multicast_addr) && children_nodes_count > 0){
             nullnet_buf = (uint8_t *)&packet;
             nullnet_len = sizeof(packet);
 
@@ -55,16 +55,31 @@ void input_callback(const void *data, uint16_t len, const linkaddr_t *src, const
         }
 
         if (packet.dst_type == NODE_TYPE) {
-          
-        } else if(has_parent && linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
-          packet.src_addr = linkaddr_node_addr;
+          if (strcmp(packet.payload, "Check up from the mobile terminal") == 0) {
+            network_packet_t response = {
+              .src_addr = linkaddr_node_addr,
+              .src_type = NODE_TYPE,
+              .dst_addr = packet.src_addr,
+              .dst_type = 5,
+              .type = 2,
+              .signal_strength = 0,
+            };
+            sprintf(response.payload, "Check up response from the light sensor");
 
+            nullnet_buf = (uint8_t *)&response;
+            nullnet_len = sizeof(response);
+
+            printf("#Network# Sending 'Check up response from the light sensor' to %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
+
+            NETSTACK_NETWORK.output(&parent.node_addr);
+          }
+        } else if(has_parent && linkaddr_cmp(&packet.dst_addr, &linkaddr_null)){
           nullnet_buf = (uint8_t *)&packet;
           nullnet_len = sizeof(packet);
 
           printf("#Network# Forwarding packet to %02x:%02x with payload: %s\n", parent.node_addr.u8[0], parent.node_addr.u8[1], packet.payload);
           NETSTACK_NETWORK.output(&parent.node_addr);
-        } 
+        }
       default:
         break;
     }

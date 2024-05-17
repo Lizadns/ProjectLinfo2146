@@ -12,7 +12,7 @@ typedef struct {
     linkaddr_t dst_addr;
     uint8_t src_type;
     uint8_t dst_type;
-    uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data, 3 = Mobile Terminal
+    uint8_t type; // 0 = Routing, 1 = Not Used, 2 = Data
     int8_t signal_strength;
     char payload[64];
 } network_packet_t;

@@ -60,7 +60,7 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
 
                     printf("#Network# Forwarding packet to %02x:%02x with payload: %s\n", parent.node_addr.u8[0], parent.node_addr.u8[1], packet.payload);
                     NETSTACK_NETWORK.output(&parent.node_addr);
-                } else if(linkaddr_cmp(&packet.dst_addr, &multicast_addr)){
+                } else if(linkaddr_cmp(&packet.dst_addr, &multicast_addr) && children_nodes_count > 0){
                     nullnet_buf = (uint8_t *)&packet;
                     nullnet_len = sizeof(packet);
 
@@ -69,28 +69,14 @@ static void input_callback(const void *data, uint16_t len, const linkaddr_t *src
                     for (int i = 0; i < children_nodes_count; i++) {
                         NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
                     }
+                } else if(linkaddr_cmp(&packet.dst_addr, &mobile_terminal.node_addr) == 0){
+                    nullnet_buf = (uint8_t *)&packet;
+                    nullnet_len = sizeof(packet);
+
+                    printf("#Network# Forwarding packet to mobile terminal with payload: %s\n", packet.payload);
+
+                    NETSTACK_NETWORK.output(&mobile_terminal.node_addr);
                 }
-                case 3:
-                    if(packet.src_type == 5){
-                        for (int i = 0; i < children_nodes_count; i++) {
-                        if (children_nodes[i].type == 2) {
-                            network_packet_t packet_checkUP = {
-                            .src_addr = linkaddr_node_addr,
-                            .src_type = NODE_TYPE,
-                            .dst_addr = children_nodes[i].node_addr,
-                            .dst_type = 2,
-                            .type = 3,
-                            .signal_strength = children_nodes[i].signal_strength,
-                            .payload = "Check up from the mobile terminal"
-                            };
-                            nullnet_buf = (uint8_t *)&packet_checkUP;
-                            nullnet_len = sizeof(packet_checkUP);
-                            NETSTACK_NETWORK.output(&children_nodes[i].node_addr);
-                            printf("Send check up from mobile terminal to light sensor\n");
-                            }
-                        }
-                        
-                    }
                 break;
             default:
                 printf("Recieved an unknown packet type from %02x:%02x\n", packet.src_addr.u8[0], packet.src_addr.u8[1]);
