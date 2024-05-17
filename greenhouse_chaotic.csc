@@ -2,7 +2,7 @@
 <simconf version="2023090101">
   <simulation>
     <title>Greenhouse_Classic</title>
-    <speedlimit>1.0</speedlimit>
+    <speedlimit>2.0</speedlimit>
     <randomseed>123456</randomseed>
     <motedelay_us>1000000</motedelay_us>
     <radiomedium>
@@ -207,7 +207,7 @@
       <mote>
         <interface_config>
           org.contikios.cooja.interfaces.Position
-          <pos x="80.24818408383325" y="119.09665905821034" />
+          <pos x="77.4296394044017" y="133.1893824553681" />
         </interface_config>
         <interface_config>
           org.contikios.cooja.mspmote.interfaces.MspMoteID
@@ -245,16 +245,16 @@
       <skin>org.contikios.cooja.plugins.skins.MoteTypeVisualizerSkin</skin>
       <viewport>2.1287581650861327 0.0 0.0 2.1287581650861327 39.20572792514825 14.169646665151989</viewport>
     </plugin_config>
-    <bounds x="3" y="116" height="400" width="400" z="4" />
+    <bounds x="3" y="116" height="400" width="400" z="5" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.LogListener
     <plugin_config>
-      <filter>DEBUG</filter>
+      <filter>ID:14</filter>
       <formatted_time />
       <coloring />
     </plugin_config>
-    <bounds x="400" y="0" height="983" width="1212" z="5" />
+    <bounds x="400" y="0" height="983" width="1212" />
   </plugin>
   <plugin>
     org.contikios.cooja.serialsocket.SerialSocketServer
@@ -272,7 +272,7 @@
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="5" y="499" height="141" width="350" z="3" />
+    <bounds x="5" y="499" height="141" width="350" z="4" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
@@ -281,7 +281,7 @@
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="2" y="609" height="144" width="350" z="2" />
+    <bounds x="2" y="609" height="144" width="350" z="3" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
@@ -290,7 +290,7 @@
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="-1" y="721" height="134" width="350" z="1" />
+    <bounds x="-1" y="721" height="134" width="350" z="2" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
@@ -299,6 +299,6 @@
       <interface>Leds</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="3" y="837" height="142" width="350" />
+    <bounds x="3" y="837" height="142" width="350" z="1" />
   </plugin>
 </simconf>
